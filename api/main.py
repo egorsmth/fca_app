@@ -5,6 +5,8 @@ import base64
 
 import core
 
+OUT_FILE_NAME = "conc.png"
+
 def getFromJson(filename):
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, filename+".json")
@@ -14,7 +16,6 @@ def getFromJson(filename):
 def encodedFile(filename):
   SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
   img_url = os.path.join(SITE_ROOT, filename)
-  print(img_url)
   data = open(img_url, "rb").read()
   encoded = str(base64.b64encode(data))
   return encoded
@@ -29,16 +30,9 @@ def hello_world():
         concept["M"],
         concept["I"])
     b = core.nextNeighbours(a)
-    # print("MAIN")
-    # print(a)
-    # print(b.C)
-    # print(list(map(lambda x: x.__hash__(), b.C)))
-    # print(b.E)
-    # print("+++++++++++++++++++++++++++++++++++++")
-    outFileName = "test1.png"
-    core.draw(b, outFileName)
+    core.draw(b, OUT_FILE_NAME)
     resp = dict({
-      'latticeImg': encodedFile(outFileName),
+      'latticeImg': encodedFile(OUT_FILE_NAME),
       'lattice': b.toJson(),
       'concept': a.toJson()
     })
@@ -58,20 +52,10 @@ def add_attribute():
       list(map(lambda x: core.Node(set(x["G"]), set(x["M"])), current_lattice["C"])), 
       set(map(lambda x: (int(x[0]), int(x[1])), current_lattice["E"]))
     )
-    # print("ADD ATTR")
-    # print(a)
-    # print(b.C)
-    # print(list(map(lambda x: x.__hash__(), b.C)))
-    # print(b.E)
-    # print("+++++++++++++++++++++++++++++++++++++")
-    print(attrM, attrMI)
-    print("JOJ", [1,0,0,0,1,0, 0])
-    print(attrM=="JOJ", attrMI==[1,0,0,0,1,0, 0])
     (newCtx, L) = core.addAttr(a, b, attrM, attrMI)
-    outFileName = "test2.png"
-    core.draw(L, outFileName)
+    core.draw(L, OUT_FILE_NAME)
     resp = dict({
-      'latticeImg': encodedFile(outFileName),
+      'latticeImg': encodedFile(OUT_FILE_NAME),
       'lattice': b.toJson(),
       'concept': a.toJson()
     })

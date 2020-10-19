@@ -1,9 +1,9 @@
-import { Component } from "react";
 import React from 'react';
 import ReactImageMagnify from 'react-image-magnify';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Container from 'react-bootstrap/Container';
 
 
 export default class Lattice extends React.Component {
@@ -141,35 +141,39 @@ export default class Lattice extends React.Component {
       }
        
       return <div>
-        <ReactImageMagnify {...{
-            smallImage: {
-              alt: '',
-              isFluidWidth: false,
-              width: 600,
-              height: 600,
-              src: this.state.latticeImg,
-          },
-          largeImage: {
-              src: this.state.latticeImg,
-              width: 2000,
-              height: 2000
-          }
-        }} />
-        <div>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                {head}
-              </tr>
-            </thead>
-            <tbody>
-              {body.map(x => <tr>{x}</tr>)}
-            </tbody>
-          </Table>
-        </div>
-        <div>
-          {form}
-        </div>
+
+        <Container fluid="lg">
+          <ReactImageMagnify {...{
+              smallImage: {
+                alt: '',
+                isFluidWidth: false,
+                width: 600,
+                height: 600,
+                src: this.state.latticeImg,
+            },
+            largeImage: {
+                src: this.state.latticeImg,
+                width: 2000,
+                height: 2000
+            }
+          }} />
+          <div>
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  {head}
+                </tr>
+              </thead>
+              <tbody>
+                {body.map(x => <tr>{x}</tr>)}
+              </tbody>
+            </Table>
+          </div>
+          <div>
+            {form}
+          </div>
+        </Container>
+
       </div>
     }
     return <div></div>
