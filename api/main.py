@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, url_for, json, jsonify, request
 from flask_cors import CORS
 import base64
+from datetime import datetime
 
 import core
 
@@ -29,12 +30,20 @@ def hello_world():
     a = core.Context(concept["G"],
         concept["M"],
         concept["I"])
+    start = datetime.now()
     b = core.nextNeighbours(a)
+    end = datetime.now()
+
+    draw_start = datetime.now()
     core.draw(b, OUT_FILE_NAME)
+    draw_end = datetime.now()
+
     resp = dict({
       'latticeImg': encodedFile(OUT_FILE_NAME),
       'lattice': b.toJson(),
-      'concept': a.toJson()
+      'concept': a.toJson(),
+      'constructTime': (end - start).total_seconds(),
+      'drawTime': (draw_end - draw_start).total_seconds()
     })
     return jsonify(resp)
 
@@ -52,12 +61,20 @@ def add_attribute():
       list(map(lambda x: core.Node(set(x["G"]), set(x["M"])), current_lattice["C"])), 
       set(map(lambda x: (int(x[0]), int(x[1])), current_lattice["E"]))
     )
+    start = datetime.now()
     (newCtx, L) = core.addAttr(a, b, attrM, attrMI)
+    end = datetime.now()
+
+    draw_start = datetime.now()
     core.draw(L, OUT_FILE_NAME)
+    draw_end = datetime.now()
+
     resp = dict({
       'latticeImg': encodedFile(OUT_FILE_NAME),
       'lattice': b.toJson(),
-      'concept': a.toJson()
+      'concept': a.toJson(),
+      'drawTime': (draw_end - draw_start).total_seconds(),
+      'addTime': (end - start).total_seconds()
     })
     return jsonify(resp)
 

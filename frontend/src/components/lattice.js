@@ -32,7 +32,9 @@ export default class Lattice extends React.Component {
         latticeImg: dataI,
         concept: data.concept,
         lattice: data.lattice,
-        openForm: false
+        openForm: false,
+        constructTime: data.constructTime,
+        drawTime: data.drawTime
       })
     });
   }
@@ -98,7 +100,9 @@ export default class Lattice extends React.Component {
         concept: data.concept,
         lattice: data.lattice,
         openForm: false,
-        formVals: {}
+        formVals: {},
+        addTime: data.addTime,
+        drawTime: data.drawTime
       })
     });
   }
@@ -157,6 +161,11 @@ export default class Lattice extends React.Component {
                 height: 2000
             }
           }} />
+          <div>
+            Create lattice time: {this.state.constructTime || "-"} sec<br></br>
+            Add attribute time: {this.state.addTime || "-"} sec<br></br>
+            Draw time: {this.state.drawTime || "-"} sec
+          </div>
           <div>
             <Table striped bordered hover>
               <thead>

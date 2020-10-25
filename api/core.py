@@ -320,7 +320,7 @@ def linkConcept(newNodeIdx, descendantsIdxs, lattice):
     for j in upBoundaryIdxs:
         lattice.addEdgeIdxs((newNodeIdx, j))
 
-def someShit(nIdx, inters, lattice):
+def intersCheck(nIdx, inters, lattice):
     childrenIdxs = getChildrebIdxs(lattice, nIdx)
     for cIdx in childrenIdxs:
         if lattice.C[cIdx].G.intersection(inters) == inters:
@@ -368,7 +368,7 @@ def addAttr(ctx, lattice, attrM, attrMI):
             M = M.union(k)
             lattice.updateCbyIdx(lattice.C.index(node), Node(node.G, M, True))
         inters = node.G.intersection(kk)
-        if not(len(inters) == 0 or inters == kk or inters == node.G or someShit(lattice.C.index(node), inters, lattice)):
+        if not(len(inters) == 0 or inters == kk or inters == node.G or intersCheck(lattice.C.index(node), inters, lattice)):
             M = copy.copy(node.M)
             M = M.union(k)
             nn = Node(inters, M, True)
