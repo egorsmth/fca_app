@@ -1,3 +1,7 @@
+install Anaconda
+install nodejs
+install npm
+
 // for backend
 cd api
 pip install -r requirements.txt
