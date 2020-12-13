@@ -2,6 +2,16 @@ from functools import reduce
 
 import json
 
+###
+# Context class with additional methods for preactical usage
+# and inner representation. Inner representation is hash table of context for faster lookup of attributes and objects in context
+#
+# updateInner: update inner representation of context after it is changed from outside or inside
+# getRowByG: get hashes of attribures by object
+# getColByM: get hashes of objects by attribute
+# toJson: returns json representation of context
+#
+###
 class Context:
     def __init__(self, G, M, I):
         self.G = G
@@ -42,6 +52,9 @@ class Context:
             'I': list(self.I)
         })
 
+###
+# Node class is concept with hash representation for inner usage and toJson method
+###
 class Node:
     def __init__(self, G, M, changed = False):
         self.G = G
@@ -64,6 +77,14 @@ class Node:
             'changed': self.changed
         })
 
+###
+# Lattice class
+#
+# addToC: adds new concept 
+# hashEdgeToNetwork: generates hash map of edges for faster nodes lookup
+# addEdgeIdxs: add edge
+# 
+###
 class Lattice:
     def __init__(self, C, E):
         self.C = C
@@ -104,6 +125,10 @@ class Lattice:
             'E': list(map(lambda x: [str(x[0]), str(x[1])], list(self.E))),
         })
 
+###
+# derivative by objects set
+# returns set of common attributes
+###
 def derivG(ctx, G1):
     res = set()
     rows = []
@@ -118,6 +143,11 @@ def derivG(ctx, G1):
         if temp:
             res.add(m)
     return res
+
+###
+# derivative by attributes set
+# returns set of common objects
+###    
 def derivM(ctx, M1):
     res = set()
     cols = []
@@ -133,6 +163,9 @@ def derivM(ctx, M1):
             res.add(g)
     return res
 
+###
+# retunrs maximum general concepts of candidates concepts
+###
 def maxGen(candidates):
     res = set()
     for c in candidates:

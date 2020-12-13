@@ -3,6 +3,9 @@ from flask import Flask, render_template, url_for, json, jsonify, request
 from flask_cors import CORS
 import base64
 from datetime import datetime
+from json import JSONEncoder
+from flask import abort
+from werkzeug.exceptions import BadRequest
 
 import core
 import draw
@@ -11,12 +14,23 @@ import nextNeighbour
 
 OUT_FILE_NAME = "conc.png"
 
+app = Flask(__name__)
+CORS(app)
+
+###
+# input: name of the json file
+# returns: json content of the file
+###
 def getFromJson(filename):
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, filename+".json")
     data = json.load(open(json_url))
     return data
 
+###
+# input: name of the image file
+# returns: base64 rpresentation of the image
+###
 def encodedFile(filename):
   SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
   img_url = os.path.join(SITE_ROOT, filename)
@@ -24,11 +38,11 @@ def encodedFile(filename):
   encoded = str(base64.b64encode(data))
   return encoded
 
-app = Flask(__name__)
-CORS(app)
-
+###
+# main route that returns image and lattice on app start
+###
 @app.route('/')
-def hello_world():
+def hello_app():
     concept = getFromJson("concept")
     a = core.Context(concept["G"],
         concept["M"],
@@ -51,7 +65,6 @@ def hello_world():
     })
     return jsonify(resp)
 
-from json import JSONEncoder
 class MyEncoder(JSONEncoder):
     def __init__(self, G, M, I):
         self.G = G
@@ -60,7 +73,9 @@ class MyEncoder(JSONEncoder):
     def default(self, o):
         return o.__dict__    
 
-
+###
+# add attribute route, returns updated image and lattice
+###
 @app.route('/addattr',  methods=['POST'])
 def add_attribute():
   try:
@@ -96,9 +111,12 @@ def add_attribute():
   except:
     return "Wrong input", 400
 
-from flask import abort
-from werkzeug.exceptions import BadRequest
-
+###
+# input: concept
+# returns: nothing on ok, throws exception on error
+#
+# checking consinstency of user imported concepts
+###
 def check_import_concept(concept):
     glen = len(concept["G"])
     mlen = len(concept["M"])
@@ -113,7 +131,10 @@ def check_import_concept(concept):
     for i in concept["I"]:
       if not (len(i) is mlen and all( list(map(lambda x: x == 0 or x == 1, i)))):
         raise Exception("I must consist of 0 or 1 and length myst be equal to attributs")
-    
+
+###
+# route for uploading json file with new lattice
+###
 @app.route('/upload', methods=['POST'])
 def fileUpload():
     file = request.files['file'] 
@@ -149,7 +170,10 @@ def fileUpload():
 
 from flask import send_file, send_from_directory
 from flask import Response
-    
+
+###
+# route for downloading current lattice as json
+###
 @app.route('/download', methods=['POST'])
 def download():
     data = request.json['json']

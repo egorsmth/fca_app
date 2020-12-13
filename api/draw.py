@@ -3,6 +3,11 @@ import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
 
+
+###
+# input: concept from lattice
+# returns: level of concept that is basically representation of vertical position on image
+###
 def levelsCount(latticeC):
     lengths = dict()
     curLen = 0
@@ -16,6 +21,12 @@ def levelsCount(latticeC):
         lengths[level] = curLen
     return lengths
 
+###
+# input: lattice structure and output image filename
+# returns: nothing
+#
+# generates image with networkx python lybrary and saves it to file
+###
 def draw(lattice, outFileName):
     fig = plt.figure(figsize=(80,80))
     G = nx.Graph()

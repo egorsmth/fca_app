@@ -1,8 +1,15 @@
 import core
 
 # NextNeighbours algorythm implementation
-# Concept data analysis theory and applications, Claudio Carpineto
+# from Concept data analysis theory and applications, Claudio Carpineto, 2004 book
 
+###
+# input: context
+# returns: lattice data structure
+#
+# for detail explanation of algorythm
+# and background theory see Concept data analysis theory and applications book page 34
+###
 def nextNeighbours(ctx):
     root = core.Node(set(ctx.G), core.derivG(ctx, ctx.G))
     C = [root]
@@ -21,6 +28,13 @@ def nextNeighbours(ctx):
     C = sorted(C, key=lambda node: node.level)
     return core.Lattice(C, E)
 
+###
+# input: context
+# returns: maximum general candidates for concepts
+#
+# for detail explanation of algorythm
+# and background theory see Concept data analysis theory and applications book page 34
+###
 def findLowerNeighbours(node, ctx):
     candidates = set()
     for m in ctx.M:

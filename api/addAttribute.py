@@ -2,21 +2,30 @@ import core
 import copy
 
 # add attribute algorythm implementation
-# Concept data analysis theory and applications, Claudio Carpineto
+# Concept data analysis theory and applications, Claudio Carpineto, 2004
 
+###
+# adds attribute to context and updates connectivity matrix
+###
 def updateCtx(ctx,attrM,attrMI):
     ctx.M.append(attrM)
     for i in range(len(ctx.I)):
         ctx.I[i].append(attrMI[i])
     ctx.updateInner()
 
+###
+# returns parent indexes of node in hash map of lattice by its index
+###
 def getParentsIdxs(lattice, nodeIdx):
     parents = set()
     for n in lattice.hashEdgeToNetwork():
         if (n[0] == nodeIdx):
             parents.add(n[1])
     return parents
-        
+
+###
+# returns children indexes of node in hash map of lattice by its index
+###
 def getChildrebIdxs(lattice, nodeIdx):
     children = set()
     for n in lattice.hashEdgeToNetwork():
@@ -24,6 +33,9 @@ def getChildrebIdxs(lattice, nodeIdx):
             children.add(n[0])
     return children
 
+###
+# get set of concepts that are low boundary for new concept that should be added to lattice
+###
 def FindLowBoundary(newNodeIdx, descendantsIdxs, lattice):
     lowBoundry = set()
     newNode = lattice.C[newNodeIdx]
@@ -40,6 +52,9 @@ def FindLowBoundary(newNodeIdx, descendantsIdxs, lattice):
             lowBoundry = lowBoundry.union(FindLowBoundary(newNodeIdx, lowCond, lattice))
     return lowBoundry
 
+###
+# get set of concepts that are up boundary for new concept that should be added to lattice
+###
 def FindUpBoundary(newNodeIdx, lowBoundaryIdxs, lattice):
     firstLevelIdxs = set()
     for i in lowBoundaryIdxs:
@@ -60,6 +75,9 @@ def FindUpBoundary(newNodeIdx, lowBoundaryIdxs, lattice):
         raise Exception("num of indexes should be equal to nodes")
     return genIdxs
 
+###
+# finds set of nodes in next level to add then to upper condistion set
+###
 def FindNextLevel(newNodeIdx, currLevelIdxs, lattice):
     upCond = set()
     newNode = lattice.C[newNodeIdx]
@@ -72,7 +90,10 @@ def FindNextLevel(newNodeIdx, currLevelIdxs, lattice):
             parentsIdxsOfnode = getParentsIdxs(lattice, nIdx)
             upCond = upCond.union(FindNextLevel(newNodeIdx, parentsIdxsOfnode, lattice))
     return upCond       
-        
+
+###
+# link new concept into lattice by removing edges betwiin nodes in lower and upper boundary and inserting new node
+###
 def linkConcept(newNodeIdx, descendantsIdxs, lattice):
     lowBoundaryIdxs = FindLowBoundary(newNodeIdx, descendantsIdxs, lattice)
     upBoundaryIdxs = FindUpBoundary(newNodeIdx, lowBoundaryIdxs, lattice)
@@ -96,6 +117,10 @@ def intersCheck(nIdx, inters, lattice):
     return False
 
 
+###
+# add attribute main function
+# for detailed explanation and background theory see Concept data analysis theory and applications book page 52
+###
 def addAttr(ctx, lattice, attrM, attrMI):
     if (len(attrMI) != len(ctx.G)):
         raise Exception("there should be same number of objects parameters")
